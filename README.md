@@ -1,40 +1,60 @@
-# Your Plugin Name
-
-Add your plugin badges here. See [nativescript-urlhandler](https://github.com/hypery2k/nativescript-urlhandler) for example.
-
-Then describe what's the purpose of your plugin. 
-
-In case you develop UI plugin, this is where you can add some screenshots.
-
-## (Optional) Prerequisites / Requirements
-
-Describe the prerequisites that the user need to have installed before using your plugin. See [nativescript-firebase plugin](https://github.com/eddyverbruggen/nativescript-plugin-firebase) for example.
-
+# NativeScript Odoo Client (API)
 ## Installation
-
-Describe your plugin installation steps. Ideally it would be something like:
-
+Run 
 ```javascript
-tns plugin add <your-plugin-name>
+tns plugin add nativescript-odoo
 ```
+## Basic method support
+* Version information 
+* Authentication
+* Basic Model methods (read, search_read, write, unlink, call_kw)
+## Usage
+```ts
+// app.component.ts
+import { Component } from "@angular/core";
+import { OdooClient } from "nativescript-odoo/odoo-api/odoo-client";
+import { OdooUser } from "nativescript-odoo/odoo-api/odoo-user";
 
-## Usage 
+@Component({
+    selector: "ns-app",
+    templateUrl: "app.component.html",
+})
 
-Describe any usage specifics for your plugin. Give examples for Android, iOS, Angular if needed. See [nativescript-drop-down](https://www.npmjs.com/package/nativescript-drop-down) for example.
-	
-	```javascript
-    Usage code snippets here
-    ```)
+export class AppComponent {
+    public odooClient: OdooClient;
+    public serverUrl = "http://yourdomain.com";
+    public username = "username";
+    public serverUrl = "password";
 
-## API
-
-Describe your plugin methods and properties here. See [nativescript-feedback](https://github.com/EddyVerbruggen/nativescript-feedback) for example.
-    
-| Property | Default | Description |
-| --- | --- | --- |
-| some property | property default value | property description, default values, etc.. |
-| another property | property default value | property description, default values, etc.. |
-    
+    constructor() {
+	    // Init OdooClient & Connect With Odoo Server
+        let self = this;
+        this.odooClient = OdooClient.getInstance();
+        this.odooClient.setServerUrl(this.serverUrl)
+        .connect({
+            onConnectSuccess: (versionInfo) => {
+                console.log("---versionInfo: ", versionInfo);
+                self.odooClient.getDatabases()
+                    .then((databases: Array<string>) => {
+                        console.log("---getDatabases: ", databases);
+                        self.odooClient.authenticate(this.username, this.password, databases[0])
+                            .then((user: OdooUser) => {
+                                console.log("---authenticate: ", self.odooClient.getCurrentUser());
+                            })
+                            .catch((error) => {
+                                console.error(error);
+                            });
+                    }).catch((error) => {
+                        console.error(error);
+                    });
+            },
+            onConnectError: (error) => {
+                console.error(error);
+            }
+        });
+    }
+}
+```
 ## License
 
 Apache License Version 2.0, January 2004
