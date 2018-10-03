@@ -217,15 +217,14 @@ export class OdooClient {
     }
 
     private httpRequestGet(args: {
-        url: string,
-        params?: {}
+        url: string
     }) {
         let httpRequest = http.request({
-            headers: this.buildHeader(),
+            headers: {},
             url: args.url,
             method: "GET"
         });
-        return this.httpRequestProcess(httpRequest);
+        return this.httpRequestProcessForHtmlResponse(httpRequest);
     }
 
     private httpRequestProcess(httpRequest: Promise<any>) {
@@ -239,6 +238,21 @@ export class OdooClient {
                     return Promise.resolve(data.result);
                 }
             } else {
+                return Promise.reject({
+                    message: "API Error"
+                });
+            }
+        }).catch(err => {
+            return Promise.reject(err);
+        });
+    }
+
+    private httpRequestProcessForHtmlResponse(httpRequest: Promise<any>) {
+        return httpRequest.then((res) => {
+            if (res && res.content) {
+                return Promise.resolve(res.content);
+            }
+            else {
                 return Promise.reject({
                     message: "API Error"
                 });
