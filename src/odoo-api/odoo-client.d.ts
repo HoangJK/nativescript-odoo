@@ -67,7 +67,9 @@ export declare class OdooClient {
         }];
         kwargs?: any;
     }): Promise<any>;
-    private httpRequest(args);
+    private httpRequestPost(args);
+    private httpRequestGet(args);
+    private httpRequestProcess(httpRequest);
     private getUserContext();
     private buildHeader();
     private buildParams(params?);

@@ -86,9 +86,8 @@ export class OdooClient {
         if (!this.getServerUrl()) {
             throw (new Error("Server URL is empty"));
         }
-        return this.httpRequest({
+        return this.httpRequestPost({
             url: this.getServerUrl() + OdooEndpoint.VERSION_INFO,
-            method: "POST"
         });
     }
 
@@ -96,9 +95,8 @@ export class OdooClient {
         if (!this.getServerUrl()) {
             throw (new Error("Server URL is empty"));
         }
-        return this.httpRequest({
+        return this.httpRequestPost({
             url: this.getServerUrl() + OdooEndpoint.DATABASE_LIST,
-            method: "POST",
             params: {
                 context: {}
             }
@@ -110,9 +108,8 @@ export class OdooClient {
             throw (new Error("Server URL is empty"));
         }
         let self = this;
-        return this.httpRequest({
+        return this.httpRequestPost({
             url: this.getServerUrl() + OdooEndpoint.AUTHENTICATE_URL,
-            method: "POST",
             params: {
                 db: db,
                 login: userName,
@@ -133,9 +130,8 @@ export class OdooClient {
             throw (new Error("Server URL is empty"));
         }
         let self = this;
-        return this.httpRequest({
+        return this.httpRequestGet({
             url: this.getServerUrl() + OdooEndpoint.LOGOUT,
-            method: "GET"
         }).then((result) => {
             self.removeCurrentUser();
             self.removeSessionId();
@@ -159,9 +155,8 @@ export class OdooClient {
         }
         if (!params.context) params.context = this.getUserContext();
         if (!params.domain) params.domain = [];
-        return this.httpRequest({
+        return this.httpRequestPost({
             url: this.getServerUrl() + OdooEndpoint.SEARCH_READ,
-            method: "POST",
             params: params
         });
     }
@@ -173,9 +168,8 @@ export class OdooClient {
         params.kwargs = params.kwargs || {};
         params.kwargs.context = params.kwargs.context || {};
         (<any>Object).assign(params.kwargs.context, this.getUserContext());
-        return this.httpRequest({
+        return this.httpRequestPost({
             url: this.getServerUrl() + OdooEndpoint.CALL_KW,
-            method: "POST",
             params: params
         });
     }
@@ -209,19 +203,34 @@ export class OdooClient {
 
     // HTTP REQUEST BUILDER
 
-    private httpRequest(args: {
+    private httpRequestPost(args: {
         url: string,
-        method: string,
         params?: {}
     }) {
-        let self = this;
-        console.log("---params: ", args);
-        return http.request({
+        let httpRequest = http.request({
             headers: this.buildHeader(),
             url: args.url,
-            method: args.method,
+            method: "POST",
             content: args.params ? this.buildParams(args.params) : this.buildParams({})
-        }).then((res) => {
+        });
+        return this.httpRequestProcess(httpRequest);
+    }
+
+    private httpRequestGet(args: {
+        url: string,
+        params?: {}
+    }) {
+        let httpRequest = http.request({
+            headers: this.buildHeader(),
+            url: args.url,
+            method: "GET"
+        });
+        return this.httpRequestProcess(httpRequest);
+    }
+
+    private httpRequestProcess(httpRequest: Promise<any>) {
+        let self = this;
+        return httpRequest.then((res) => {
             if (res && res.content && res.content.toJSON) {
                 let data = res.content.toJSON();
                 if (data.error) {
