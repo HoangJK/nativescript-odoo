@@ -37,7 +37,7 @@ export declare class OdooClient {
     }): this;
     getVersionInfo(): Promise<any>;
     getDatabases(): Promise<Array<string>>;
-    authenticate(userName: string, password: string, db: string): Promise<void>;
+    authenticate(userName: string, password: string, db: string): Promise<OdooUser>;
     private getSessionInfo();
     logout(): Promise<void>;
     searchRead(params: {
