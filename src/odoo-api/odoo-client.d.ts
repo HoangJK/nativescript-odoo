@@ -8,6 +8,7 @@ export declare class OdooEndpoint {
     static readonly VERSION_INFO: string;
     static readonly DATABASE_LIST: string;
     static readonly AUTHENTICATE_URL: string;
+    static readonly GET_SESSION_INFO: string;
     static readonly LOGOUT: string;
     static readonly SEARCH_READ: string;
     static readonly CALL_KW: string;
@@ -36,7 +37,8 @@ export declare class OdooClient {
     }): this;
     getVersionInfo(): Promise<any>;
     getDatabases(): Promise<Array<string>>;
-    authenticate(userName: string, password: string, db: string): Promise<OdooUser>;
+    authenticate(userName: string, password: string, db: string): Promise<void>;
+    private getSessionInfo();
     logout(): Promise<void>;
     searchRead(params: {
         model: string;
@@ -70,6 +72,7 @@ export declare class OdooClient {
     private httpRequestPost(args);
     private httpRequestGet(args);
     private httpRequestProcess(httpRequest);
+    private httpRequestProcessForHtmlResponse(httpRequest);
     private getUserContext();
     private buildHeader();
     private buildParams(params?);

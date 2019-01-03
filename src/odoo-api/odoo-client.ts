@@ -12,6 +12,7 @@ export class OdooEndpoint {
     public static readonly VERSION_INFO = "/web/webclient/version_info";
     public static readonly DATABASE_LIST = "/web/database/list";
     public static readonly AUTHENTICATE_URL = "/web/session/authenticate";
+    public static readonly GET_SESSION_INFO = "/web/session/get_session_info";
     public static readonly LOGOUT = "/web/session/logout";
     public static readonly SEARCH_READ = "/web/dataset/search_read";
     public static readonly CALL_KW = "/web/dataset/call_kw";
@@ -108,21 +109,50 @@ export class OdooClient {
             throw (new Error("Server URL is empty"));
         }
         let self = this;
-        return this.httpRequestPost({
+        return http.request({
+            headers: {
+                "Content-Type": "application/json",
+            },
             url: this.getServerUrl() + OdooEndpoint.AUTHENTICATE_URL,
-            params: {
-                db: db,
-                login: userName,
-                password: password
-            }
+            method: "POST",
+            content: JSON.stringify({
+                jsonrpc: "2.0",
+                method: "call",
+                params: {
+                    db: db,
+                    login: userName,
+                    password: password
+                }
+            })
         }).then((result) => {
-            self.setSessionId(result.session_id);
-            let user: OdooUser = OdooUser.parse(result);
+            return self.getSessionInfo()
+        })
+        .then((sessionInfo) => {
+            self.setSessionId(sessionInfo.session_id);
+            let user: OdooUser = OdooUser.parse(sessionInfo);
             self.setCurrentUser(user);
             return Promise.resolve(user);
-        }).catch((error) => {
+        })
+        .catch((error) => {
             return Promise.reject(error);
         });
+    }
+
+    private getSessionInfo() {
+        let httpRequest = http.request({
+            headers: {
+                "Content-Type": "application/json",
+            },
+            url: this.getServerUrl() + OdooEndpoint.GET_SESSION_INFO,
+            method: "POST",
+            content: JSON.stringify({
+                jsonrpc: "2.0",
+                method: "call",
+                params: {
+                }
+            })
+        });
+        return this.httpRequestProcess(httpRequest);
     }
 
     public logout() {
