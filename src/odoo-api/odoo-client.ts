@@ -395,3 +395,4 @@ export class OdooClient {
 		return Promise.reject(errorObj);
 	}
 }
+
