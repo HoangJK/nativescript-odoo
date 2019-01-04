@@ -293,6 +293,7 @@ export class OdooClient {
             "Content-Type": "application/json",
             "X-Openerp-Session-Id": this.getSessionId() || undefined,
         };
+        // This code make header to { "Content-Type": "application/json" } when this.getSessionId() is null
         return JSON.parse(JSON.stringify(header));
     }
 
