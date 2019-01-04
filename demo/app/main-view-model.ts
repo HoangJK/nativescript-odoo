@@ -8,7 +8,7 @@ export class HelloWorldModel extends Observable {
     constructor() {
         super();
         this.odooClient = OdooClient.getInstance();
-        this.odooClient.setServerUrl("http://192.168.1.162:8069");
+        this.odooClient.setServerUrl("http://yourdomain.com");
     }
 
     onTap() {
@@ -18,9 +18,9 @@ export class HelloWorldModel extends Observable {
             .logout()
             .then(function(res) {
                 self.odooClient
-                    .authenticate("caophuc55", "123456", "moretarget-06-12-2018")
+                    .authenticate("username", "password", "dbName")
                     .then(user => {
-                        console.log("authenticate ", user);
+                        console.log("user: ", user);
                         self.odooClient
                             .searchRead({
                                 model: "res.users",
