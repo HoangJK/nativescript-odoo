@@ -1,60 +1,90 @@
 # NativeScript Odoo Client (API)
+
 ## Installation
-Run 
+
+Run
+
 ```javascript
 tns plugin add nativescript-odoo
 ```
+
 ## Basic method support
-* Version information 
-* Authentication
-* Basic Model methods (read, search_read, write, unlink, call_kw)
+
+-   Version information
+-   Authentication
+-   Basic Model methods (search_read, create, read, write, unlink, onchange, read_group)
+
 ## Usage
+
 ```ts
-// app.component.ts
+// home.component.ts
 import { Component } from "@angular/core";
 import { OdooClient } from "nativescript-odoo/odoo-api/odoo-client";
-import { OdooUser } from "nativescript-odoo/odoo-api/odoo-user";
 
 @Component({
-    selector: "ns-app",
-    templateUrl: "app.component.html",
+    selector: "Home",
+    templateUrl: "./home.component.html",
 })
-
-export class AppComponent {
+export class HomeComponent {
     public odooClient: OdooClient;
     public serverUrl = "http://yourdomain.com";
     public username = "username";
-    public serverUrl = "password";
+    public password = "username";
 
     constructor() {
-	    // Init OdooClient & Connect With Odoo Server
-        let self = this;
+        this.test();
+    }
+
+    async test() {
+        // Get Odoo Client instance
         this.odooClient = OdooClient.getInstance();
-        this.odooClient.setServerUrl(this.serverUrl)
-        .connect({
-            onConnectSuccess: (versionInfo) => {
-                console.log("---versionInfo: ", versionInfo);
-                self.odooClient.getDatabases()
-                    .then((databases: Array<string>) => {
-                        console.log("---getDatabases: ", databases);
-                        self.odooClient.authenticate(this.username, this.password, databases[0])
-                            .then((user: OdooUser) => {
-                                console.log("---authenticate: ", self.odooClient.getCurrentUser());
-                            })
-                            .catch((error) => {
-                                console.error(error);
-                            });
-                    }).catch((error) => {
-                        console.error(error);
-                    });
-            },
-            onConnectError: (error) => {
-                console.error(error);
+
+        // Set Odoo Server Url
+        this.odooClient.setServerUrl(this.serverUrl);
+
+        // Connect Odoo server and get version
+        let versionInfo;
+        try {
+            versionInfo = await this.odooClient.connect();
+            console.log("=> Version info");
+            console.dir(versionInfo);
+        } catch (err) {
+            alert(err);
+        }
+
+        // Get database
+        let databases;
+        if (versionInfo) {
+            try {
+                databases = await this.odooClient.getDatabases();
+                console.log("=> Database");
+                console.dir(databases);
+            } catch (err) {
+                alert(err);
             }
-        });
+        }
+
+        // Authentication with username and password
+        let userInfo;
+        try {
+            userInfo = await this.odooClient.authenticate(this.username, this.password, databases[0]);
+            console.log("=> User info");
+            console.dir(userInfo);
+        } catch (err) {
+            alert(err);
+        }
+
+        // Logout
+        try {
+            await this.odooClient.logout();
+            console.log("=> Logout successfully");
+        } catch (err) {
+            alert(err);
+        }
     }
 }
 ```
+
 ## License
 
 Apache License Version 2.0, January 2004

@@ -1,31 +1,34 @@
 {
     "name": "nativescript-odoo",
-    "version": "1.0.3",
+    "version": "2.0.0",
     "description": "NativeScript plugin to connect with Odoo Server",
     "main": "odoo",
     "typings": "index.d.ts",
     "nativescript": {
         "platforms": {
-            "android": "4.0.0",
-            "ios": "4.0.0"
+            "android": "6.1.0",
+            "ios": "6.1.0"
         }
     },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/HoangJK/nativescript-odoo.git"
+    },
     "scripts": {
-        "tsc": "tsc",
+        "tsc": "npm i && tsc",
         "build": "npm run tsc && npm run build.native",
         "build.native": "node scripts/build-native.js",
-        "postclone": "npm i && node scripts/postclone.js && cd ../demo && npm i && npx rimraf -- package-lock.json && cd ../src",
-        "test.android": "npm run tsc && npm run tslint && cd ../demo && tns build android && tns test android --justlaunch",
-        "test.ios": "npm run tsc && npm run tslint && cd ../demo && tns build ios && tns test ios --justlaunch",
         "tslint": "cd .. && tslint \"**/*.ts\" --config tslint.json --exclude \"**/node_modules/**\"",
-        "plugin.tscwatch": "npm run tsc -- -w",
-        "demo.ios": "npm run tsc && cd ../demo && tns run ios --syncAllFiles",
-        "demo.android": "npm run tsc && cd ../demo && tns run android --syncAllFiles",
+        "ci.tslint": "npm i && tslint '**/*.ts' --config '../tslint.json' --exclude '**/node_modules/**' --exclude '**/platforms/**'",
+        "prepack": "npm run build.native",
+        "demo.ios": "npm run tsc && cd ../demo && tns run ios",
+        "demo.android": "npm run tsc && cd ../demo && tns run android",
         "demo.reset": "cd ../demo && npx rimraf -- hooks node_modules platforms package-lock.json",
-        "plugin.prepare": "npm run build && cd ../demo && tns plugin remove nativescript-odoo && tns plugin add ../src",
-        "clean": "npm run demo.reset && npx rimraf -- node_modules package-lock.json && npm i",
-        "ci.tslint": "npm i && tslint '**/*.ts' --config '../tslint.json' --exclude '**/node_modules/**'",
-        "prepack": "npm run build.native"
+        "demo-angular.ios": "npm run tsc && cd ../demo-angular && tns run ios",
+        "demo-angular.android": "npm run tsc && cd ../demo-angular && tns run android",
+        "demo-angular.reset": "cd ../demo-angular && npx rimraf -- hooks node_modules platforms package-lock.json",
+        "plugin.prepare": "npm run build && cd ../demo && tns plugin remove nativescript-odoo && tns plugin add ../src && cd ../demo-angular && tns plugin remove nativescript-odoo && tns plugin add ../src",
+        "clean": "npm run demo.reset && npm run demo-angular.reset && npx rimraf -- node_modules package-lock.json && npm i"
     },
     "keywords": [
         "NativeScript",
@@ -42,18 +45,15 @@
     },
     "license": "Apache-2.0",
     "homepage": "https://github.com/HoangJK/nativescript-odoo",
-    "readmeFilename": "README.md",
     "devDependencies": {
-        "tns-core-modules": "^4.2.0",
-        "tns-platform-declarations": "^4.2.0",
-        "typescript": "~2.8.2",
+        "tns-core-modules": "^6.0.0",
+        "tns-platform-declarations": "^6.0.0",
+        "typescript": "~3.4.5",
         "prompt": "^1.0.0",
-        "rimraf": "^2.6.2",
-        "tslint": "^5.11.0",
-        "semver": "^5.5.0"
+        "rimraf": "^2.6.3",
+        "tslint": "^5.12.1",
+        "semver": "^5.6.0"
     },
-    "dependencies": {
-        "nativescript-localstorage": "2.0.0"
-    },
+    "dependencies": {},
     "bootstrapper": "nativescript-plugin-seed"
 }

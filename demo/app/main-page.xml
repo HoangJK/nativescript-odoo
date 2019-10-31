@@ -1,6 +1,0 @@
-<Page xmlns="http://schemas.nativescript.org/tns.xsd" loaded="pageLoaded" class="page"
-  xmlns:ui="nativescript-odoo">
-  <StackLayout class="p-20">
-    <Label text="message" class="t-20 text-center c-black" tap="{{ onTap }}" textWrap="true"/>
-  </StackLayout>
-</Page>
