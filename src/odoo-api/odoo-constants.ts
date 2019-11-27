@@ -6,6 +6,7 @@ export class OdooEndpoint {
     public static readonly LOGOUT = "/web/session/logout";
     public static readonly SEARCH_READ = "/web/dataset/search_read";
     public static readonly CALL_KW = "/web/dataset/call_kw";
+    public static readonly CALL_BUTTON = "/web/dataset/call_button";
 }
 
 export class OdooMethod {

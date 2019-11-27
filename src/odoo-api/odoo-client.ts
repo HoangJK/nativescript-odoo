@@ -175,6 +175,16 @@ export class OdooClient extends OdooRequest {
         });
     }
 
+    public callButton(params: { model: string; method: string; args: any; kwargs?: any }) {
+        params.args = params.args || {};
+        params.model = params.model || "";
+        params.method = params.method || "";
+        return this.httpRequestPost({
+            url: this.getServerUrl() + OdooEndpoint.CALL_BUTTON,
+            params: params,
+        });
+    }
+
     public create(params: { model: string; args: Array<{ [key: string]: any }>; kwargs?: any }) {
         return this.callKW({
             model: params.model,

@@ -9,7 +9,7 @@ export declare class OdooClient extends OdooRequest {
     private setCurrentUser;
     private removeCurrentUser;
     getCurrentUser(): OdooUser;
-    getUserContext: () => {};
+    getUserContext(): {};
     private setSessionId;
     private removeSessionId;
     getSessionId(): string;
@@ -29,6 +29,12 @@ export declare class OdooClient extends OdooRequest {
         sort?: string;
     }): Promise<any>;
     callKW(params: {
+        model: string;
+        method: string;
+        args: any;
+        kwargs?: any;
+    }): Promise<any>;
+    callButton(params: {
         model: string;
         method: string;
         args: any;

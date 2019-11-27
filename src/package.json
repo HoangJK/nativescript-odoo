@@ -1,6 +1,6 @@
 {
     "name": "nativescript-odoo",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "description": "NativeScript plugin to connect with Odoo Server",
     "main": "odoo",
     "typings": "index.d.ts",
